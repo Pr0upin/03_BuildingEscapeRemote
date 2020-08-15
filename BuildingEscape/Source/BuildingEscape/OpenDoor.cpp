@@ -23,15 +23,18 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Owner = GetOwner();
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor()
 {
-	AActor* Owner = GetOwner();
-	FRotator DoorRotation (0.0f, 45.0f, 0.0f);
-	Owner->SetActorRotation(DoorRotation);
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+}
+
+void UOpenDoor::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
 
 
@@ -45,7 +48,16 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger Opened by %s"), *ActorThatOpens->GetName());
 		OpenDoor();
+		LastDoorOpenTime = 	GetWorld()->GetTimeSeconds();
 	}
+		
+	if (GetWorld()->GetTimeSeconds()> LastDoorOpenTime + DoorCloseDelay)
+	{
+		CloseDoor();
+	}
+	
+
+	//check if its time to close the door
 
 }
 
