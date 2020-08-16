@@ -3,6 +3,7 @@
 
 #include "Grabber.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -31,5 +32,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	/*APlayerController PlayerController;
+	FVector Location;
+	FRotator Rotation;
+	PlayerController.GetPlayerViewPoint(Location, Rotation);
+	UE_LOG(LogTemp, Warning, TEXT("Pawns Location: %s. Rotation: %s"), "Location.ToString()", "Rotation.ToString()");*/
+
 }
 
