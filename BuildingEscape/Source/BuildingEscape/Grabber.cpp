@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 #define OUT
 
@@ -26,6 +27,8 @@ void UGrabber::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("%s reporting for duty"), *GetOwner()->GetName());
 
+
+
 }
 
 
@@ -41,10 +44,30 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
-	UE_LOG(LogTemp, Warning, TEXT("Pawns Location: %s. Rotation: %s"),
-		*PlayerViewPointLocation.ToString(),
-		*PlayerViewPointRotation.ToString()
+	//UE_LOG(LogTemp, Warning, TEXT("Pawns Location: %s. Rotation: %s"),
+	//	*PlayerViewPointLocation.ToString(),
+	//	*PlayerViewPointRotation.ToString()
+	//)
+
+	UE_LOG(LogTemp, Warning, TEXT("Pawns Rot Vector: %s"),
+		*PlayerViewPointRotation.Vector().ToString()
 	)
+
+	//FVector LineTraceEnd = PlayerViewPointLocation + FVector(0.0f, 0.0f, 200.0f);
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * DebugLineLength;
+
+	DrawDebugLine(
+		GetWorld(),
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FColor(255, 0, 0),
+		false,
+		0.0f,
+		0,
+		5.0f
+	);
+
+	//draw a red trace in the world
 
 }
 
