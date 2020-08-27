@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "CollisionQueryParams.h"
 
 #define OUT
 
@@ -37,7 +38,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Get player view point this tick
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
@@ -67,7 +68,28 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		5.0f
 	);
 
-	//draw a red trace in the world
+	/// Setup query parameters
+	FHitResult Hit;
+	FCollisionQueryParams TraceParameters (
+		FName(TEXT("")),
+		false,
+		GetOwner()
+	);
+
+	//Line-Trace (AKA raycast) out to reach distance
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit,
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+	);
+
+	if (Hit.GetActor()){
+		UE_LOG(LogTemp, Warning, TEXT("Traced Object: %s"),
+			*Hit.GetActor()->GetName()
+		)
+	}
 
 }
 

@@ -21,7 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		uint16 DebugLineLength = 60;
+		uint16 DebugLineLength = 150;
 
 public:	
 	// Called every frame
