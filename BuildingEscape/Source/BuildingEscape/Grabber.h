@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/InputComponent.h"
+
 
 #include "Grabber.generated.h"
 
@@ -35,5 +37,8 @@ private:
 	// initialized with nullpointer
 	// as we cannot guarantee the component is going to be loaded yet
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
-		
+	UInputComponent* InputComponent = nullptr;
+
+	// Ray cast and grab what's in reach
+	void Grab();
 };

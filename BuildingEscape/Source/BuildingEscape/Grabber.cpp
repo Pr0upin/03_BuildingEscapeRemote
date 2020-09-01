@@ -8,6 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "CollisionQueryParams.h"
 
+
 #define OUT
 
 // Sets default values for this component's properties
@@ -32,12 +33,25 @@ void UGrabber::BeginPlay()
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
 	{
-	
+		UE_LOG(LogTemp, Error, TEXT("Physics Handle Component found on: %s"), *GetOwner()->GetName());
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Physics Handle Component not found on: %s"), *GetOwner()->GetName());
 	}
+
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input Handle Component found on: %s"), *GetOwner()->GetName());
+		/// Bind Input Axis
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input Handle Component not found on: %s"), *GetOwner()->GetName());
+	}
+
 }
 
 
@@ -100,6 +114,14 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 			*Hit.GetActor()->GetName()
 		)
 	}
+
+
+
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab Pressed"))
 
 }
 
