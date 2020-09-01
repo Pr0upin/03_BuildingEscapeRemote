@@ -28,8 +28,16 @@ void UGrabber::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("%s reporting for duty"), *GetOwner()->GetName());
 
-
-
+	/// Look for attached physics handle
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+	
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Physics Handle Component not found on: %s"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -50,9 +58,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//	*PlayerViewPointRotation.ToString()
 	//)
 
-	UE_LOG(LogTemp, Warning, TEXT("Pawns Rot Vector: %s"),
+
+	//Uncomment following to Log Pawns Rotation Vector
+	/*UE_LOG(LogTemp, Warning, TEXT("Pawns Rot Vector: %s"),
 		*PlayerViewPointRotation.Vector().ToString()
-	)
+	)*/
 
 	//FVector LineTraceEnd = PlayerViewPointLocation + FVector(0.0f, 0.0f, 200.0f);
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * DebugLineLength;

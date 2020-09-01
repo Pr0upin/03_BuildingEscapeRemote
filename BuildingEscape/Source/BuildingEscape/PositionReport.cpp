@@ -24,7 +24,9 @@ void UPositionReport::BeginPlay()
 	FString ObjectPos = GetOwner()->GetActorLocation().ToCompactString();
 	//FString ObjectPos = GetOwner()->GetActorLocation().ToString();
 	//FString ObjectPos = GetOwner()->GetTransform().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s position: %s"), *ObjectName, *ObjectPos);
+
+	// uncomment this line to log the components position
+	//UE_LOG(LogTemp, Warning, TEXT("%s position: %s"), *ObjectName, *ObjectPos);
 	
 }
 
