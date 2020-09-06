@@ -6,8 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/InputComponent.h"
-
-
+// generated headers must come last!
 #include "Grabber.generated.h"
 
 
@@ -35,16 +34,30 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-
 private:
 	// initialized with nullpointer
 	// as we cannot guarantee the component is going to be loaded yet
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
+	mutable FVector PlayerViewPointLocation;
+	mutable FRotator PlayerViewPointRotation;
+	mutable FVector LineTraceEnd;
 
 	// Ray cast and grab what's in reach
 	void Grab();
 
 	//called when grab is released
 	void Release();
+
+	// Find attached physics handle component
+	void FindPhysicsHandleComponent();
+
+	// setup assumed attached input component
+	void SetupInputComponent();
+
+	// Return hit for first physics body in reach
+	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	// Get player viewPoint
+	void GetPlayerViewPoint() const;
 };
