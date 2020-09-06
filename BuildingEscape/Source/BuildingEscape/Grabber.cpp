@@ -46,6 +46,7 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Input Handle Component found on: %s"), *GetOwner()->GetName());
 		/// Bind Input Axis
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
 	{
@@ -81,20 +82,23 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//FVector LineTraceEnd = PlayerViewPointLocation + FVector(0.0f, 0.0f, 200.0f);
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * DebugLineLength;
 
-	DrawDebugLine(
-		GetWorld(),
-		PlayerViewPointLocation,
-		LineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.0f,
-		0,
-		5.0f
-	);
+	if (bShowDebugLine)
+	{
+		DrawDebugLine(
+			GetWorld(),
+			PlayerViewPointLocation,
+			LineTraceEnd,
+			FColor(255, 0, 0),
+			false,
+			0.0f,
+			0,
+			5.0f
+		);
+	}
 
 	/// Setup query parameters
 	FHitResult Hit;
-	FCollisionQueryParams TraceParameters (
+	FCollisionQueryParams TraceParameters(
 		FName(TEXT("")),
 		false,
 		GetOwner()
@@ -109,7 +113,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		TraceParameters
 	);
 
-	if (Hit.GetActor()){
+	if (Hit.GetActor()) {
 		UE_LOG(LogTemp, Warning, TEXT("Traced Object: %s"),
 			*Hit.GetActor()->GetName()
 		)
@@ -125,3 +129,8 @@ void UGrabber::Grab()
 
 }
 
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab Released"))
+
+}

@@ -26,7 +26,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		uint16 DebugLineLength = 150;
+		bool bShowDebugLine = true;
+
+	UPROPERTY(EditAnywhere)
+		uint16 DebugLineLength = 100;
 
 public:	
 	// Called every frame
@@ -41,4 +44,7 @@ private:
 
 	// Ray cast and grab what's in reach
 	void Grab();
+
+	//called when grab is released
+	void Release();
 };
