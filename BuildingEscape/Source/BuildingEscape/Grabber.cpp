@@ -34,9 +34,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//if the phyics handle is attached
-		// move the object that we're holding
-
+	/// bShowDebugLine is an editable parameter of this component
+	/// Draws a red line from the pawn until LineTraceEnd
 	if (bShowDebugLine)
 	{
 		GetPlayerViewPoint();
@@ -52,15 +51,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		);
 	}
 
+	// snap grabbed object to LineTraceEnd
 	if (PhysicsHandle != nullptr)
 	{
 		PhysicsHandle->SetTargetLocation(LineTraceEnd);
 	}
 }
 
+// Find Physics Handle Component
 void UGrabber::FindPhysicsHandleComponent()
 {
-	/// Look for attached physics handle
+	/// Look for attached physics handle component
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
 	{
@@ -74,6 +75,7 @@ void UGrabber::FindPhysicsHandleComponent()
 
 void UGrabber::SetupInputComponent()
 {
+	/// Look for attached Input component
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
@@ -88,6 +90,7 @@ void UGrabber::SetupInputComponent()
 	}
 }
 
+// Line Trace (ray-cast) from viewer's POV and return the first hit physics body
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
 	GetPlayerViewPoint();
@@ -109,7 +112,8 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 		TraceParameters
 	);
 
-	if (Hit.GetActor()) {
+	if (Hit.GetActor())
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Traced Object: %s"),
 			*Hit.GetActor()->GetName()
 		)
@@ -117,38 +121,40 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	return Hit;
 }
 
+
+// Calculate vector reaching out of the player view
 void UGrabber::GetPlayerViewPoint() const
 {
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
-
-	// Find vector reaching out of the player view
 	LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * DebugLineLength;
 }
 
-// Input Bindings
+// Grab physics object
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab Pressed"))
 
-		// If we hit something then attach a physics handle
-			// TODO attach physics handle
-		UPrimitiveComponent* ComponentToGrab = GetFirstPhysicsBodyInReach().GetComponent();
+	// Check if any Physics object is in reach
+	UPrimitiveComponent* ComponentToGrab = GetFirstPhysicsBodyInReach().GetComponent();
 	
+	// If a physics body was found, 'grab' it
 	if (ComponentToGrab)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ComponentToGrab: %s"),
 				*ComponentToGrab->GetOwner()->GetName()
 			)
+
+		/// With rotation un-constrained
 		PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation()
 		);
 
-		///With Rotation Constrained
+		/// With Rotation Constrained
 		/*PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
 			NAME_None,
@@ -158,6 +164,7 @@ void UGrabber::Grab()
 	}
 }
 
+// Release grabbed physics object
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab Released"))

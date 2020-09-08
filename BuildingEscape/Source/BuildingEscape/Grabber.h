@@ -43,10 +43,10 @@ private:
 	mutable FRotator PlayerViewPointRotation;
 	mutable FVector LineTraceEnd;
 
-	// Ray cast and grab what's in reach
+	// Cast ray and grab what's in reach
 	void Grab();
 
-	//called when grab is released
+	// Called when grab Input is released
 	void Release();
 
 	// Find attached physics handle component
