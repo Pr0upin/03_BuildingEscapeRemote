@@ -38,11 +38,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	/// Draws a red line from the pawn until LineTraceEnd
 	if (bShowDebugLine)
 	{
-		GetPlayerViewPoint();
 		DrawDebugLine(
 			GetWorld(),
-			PlayerViewPointLocation,
-			LineTraceEnd,
+			GetPlayerViewPointStart(),
+			GetPlayerViewPointEnd(),
 			FColor(255, 0, 0),
 			false,
 			0.0f,
@@ -54,7 +53,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// snap grabbed object to LineTraceEnd
 	if (PhysicsHandle != nullptr)
 	{
-		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+		PhysicsHandle->SetTargetLocation(GetPlayerViewPointEnd());
 	}
 }
 
@@ -93,8 +92,6 @@ void UGrabber::SetupInputComponent()
 // Line Trace (ray-cast) from viewer's POV and return the first hit physics body
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-	GetPlayerViewPoint();
-
 	/// Setup query parameters
 	FHitResult Hit;
 	FCollisionQueryParams TraceParameters(
@@ -106,8 +103,8 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	//Line-Trace (AKA raycast) out to reach distance
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT Hit,
-		PlayerViewPointLocation,
-		LineTraceEnd,
+		GetPlayerViewPointStart(),
+		GetPlayerViewPointEnd(),
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
 	);
@@ -121,15 +118,27 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	return Hit;
 }
 
-
-// Calculate vector reaching out of the player view
-void UGrabber::GetPlayerViewPoint() const
+// Update Current Viewpoint's location and rotation
+void UGrabber::UpdateViewPoint() const
 {
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
-	LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * DebugLineLength;
+}
+
+// Calculate vector reaching out of the player view
+FVector UGrabber::GetPlayerViewPointStart() const
+{
+	UpdateViewPoint();
+	return PlayerViewPointLocation;
+}
+
+// Calculate vector reaching out of the player view
+FVector UGrabber::GetPlayerViewPointEnd() const
+{
+	UpdateViewPoint();
+	return PlayerViewPointLocation + PlayerViewPointRotation.Vector() * GrabDistance;
 }
 
 // Grab physics object

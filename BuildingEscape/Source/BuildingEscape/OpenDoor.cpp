@@ -8,6 +8,8 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Controller.h"
 
+#define OUT
+
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
 {
@@ -24,7 +26,6 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor()
@@ -44,20 +45,29 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Poll the trigger volume every frame
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	if (GetTotalMassOfActorsOnPlate() > 50.0f) // TODO make into a parameter
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trigger Opened by %s"), *ActorThatOpens->GetName());
 		OpenDoor();
 		LastDoorOpenTime = 	GetWorld()->GetTimeSeconds();
 	}
-		
+
+	//check if its time to close the door
 	if (GetWorld()->GetTimeSeconds()> LastDoorOpenTime + DoorCloseDelay)
 	{
 		CloseDoor();
 	}
-	
-
-	//check if its time to close the door
 
 }
 
+float UOpenDoor::GetTotalMassOfActorsOnPlate()
+{
+	float TotalMass = 0.0f;
+	// Find all the overlapping actors
+
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors); 
+
+	// Iterate through them adding their masses
+
+	return TotalMass;
+}

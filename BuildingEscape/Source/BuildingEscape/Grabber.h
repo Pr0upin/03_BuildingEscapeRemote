@@ -28,7 +28,7 @@ protected:
 		bool bShowDebugLine = true;
 
 	UPROPERTY(EditAnywhere)
-		uint16 DebugLineLength = 100;
+		uint16 GrabDistance = 100;
 
 public:	
 	// Called every frame
@@ -39,9 +39,11 @@ private:
 	// as we cannot guarantee the component is going to be loaded yet
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
+
+	//updated by calling UpdateViewPoint
 	mutable FVector PlayerViewPointLocation;
 	mutable FRotator PlayerViewPointRotation;
-	mutable FVector LineTraceEnd;
+	//mutable FVector LineTraceEnd;
 
 	// Cast ray and grab what's in reach
 	void Grab();
@@ -58,6 +60,12 @@ private:
 	// Return hit for first physics body in reach
 	FHitResult GetFirstPhysicsBodyInReach() const;
 
+	// Update current frame's viewpoint Location and rotation
+	void UpdateViewPoint() const;
+
 	// Get player viewPoint
-	void GetPlayerViewPoint() const;
+	FVector GetPlayerViewPointStart() const;
+
+	// Get player viewPoint
+	FVector GetPlayerViewPointEnd() const;
 };
