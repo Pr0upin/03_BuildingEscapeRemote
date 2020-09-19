@@ -25,7 +25,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		bool bShowDebugLine = true;
+		bool bShowDebugLine = false;
 
 	UPROPERTY(EditAnywhere)
 		uint16 GrabDistance = 100;

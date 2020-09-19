@@ -157,19 +157,19 @@ void UGrabber::Grab()
 			)
 
 		/// With rotation un-constrained
-		PhysicsHandle->GrabComponentAtLocation(
+		/*PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation()
-		);
+		);*/
 
 		/// With Rotation Constrained
-		/*PhysicsHandle->GrabComponentAtLocationWithRotation(
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
 			NAME_None,
 			ComponentToGrab->GetOwner()->GetActorLocation(),
 			PlayerViewPointRotation
-		);*/
+		);
 	}
 }
 
