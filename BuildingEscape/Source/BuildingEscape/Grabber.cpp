@@ -62,7 +62,7 @@ void UGrabber::FindPhysicsHandleComponent()
 {
 	/// Look for attached physics handle component
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
+	if (PhysicsHandle != nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Physics Handle Component found on: %s"), *GetOwner()->GetName());
 	}
@@ -156,6 +156,7 @@ void UGrabber::Grab()
 				*ComponentToGrab->GetOwner()->GetName()
 			)
 
+		if (!PhysicsHandle) { return; }
 		/// With rotation un-constrained
 		/*PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
@@ -177,5 +178,6 @@ void UGrabber::Grab()
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab Released"))
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
